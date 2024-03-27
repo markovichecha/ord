@@ -42,6 +42,8 @@ pub(crate) struct Updater<'index> {
 
 impl<'index> Updater<'index> {
   pub(crate) fn update_index(&mut self, mut wtx: WriteTransaction) -> Result {
+    coz::scope!("update_index");
+
     let start = Instant::now();
     let starting_height = u32::try_from(self.index.client.get_block_count()?).unwrap() + 1;
     let starting_index_height = self.height;
@@ -312,6 +314,7 @@ impl<'index> Updater<'index> {
     block: BlockData,
     value_cache: &mut HashMap<OutPoint, u64>,
   ) -> Result<()> {
+    coz::scope!("index_block");
     Reorg::detect_reorg(&block, self.height, self.index)?;
 
     let start = Instant::now();
@@ -696,6 +699,8 @@ impl<'index> Updater<'index> {
   }
 
   fn commit(&mut self, wtx: WriteTransaction, value_cache: HashMap<OutPoint, u64>) -> Result {
+    coz::scope!("commit");
+
     log::info!(
       "Committing at block height {}, {} outputs traversed, {} in map, {} cached",
       self.height,

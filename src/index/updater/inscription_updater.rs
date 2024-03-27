@@ -76,6 +76,8 @@ impl<'a, 'tx> InscriptionUpdater<'a, 'tx> {
     txid: Txid,
     input_sat_ranges: Option<&VecDeque<(u64, u64)>>,
   ) -> Result {
+    coz::scope!("index_inscriptions");
+
     let mut floating_inscriptions = Vec::new();
     let mut id_counter = 0;
     let mut inscribed_offsets = BTreeMap::new();
@@ -396,6 +398,8 @@ impl<'a, 'tx> InscriptionUpdater<'a, 'tx> {
     new_satpoint: SatPoint,
     transaction: &Transaction,
   ) -> Result {
+    coz::scope!("update_inscription_location");
+
     let inscription_id = flotsam.inscription_id;
     let (unbound, sequence_number) = match flotsam.origin {
       Origin::Old { old_satpoint } => {
